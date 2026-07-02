@@ -1,0 +1,24 @@
+
+[10:56:24] Locale: LANG=C.UTF-8 LC_ALL=C.UTF-8
+
+[10:56:24] OpenFOAM loaded: WM_PROJECT=OpenFOAM WM_PROJECT_VERSION=v2506
+
+[10:56:25] Template case: /usr/lib/openfoam/openfoam2506/tutorials/incompressible/icoFoam/cavity/cavity
+
+[10:56:25] Testing OpenFOAM case path: /tmp/openfoam-japanese-paths/of_ascii/case01
+
+[10:56:25] OK: /tmp/openfoam-japanese-paths/of_ascii/case01
+
+[10:56:25] Testing OpenFOAM case path: /tmp/openfoam-japanese-paths/日本語/case01
+
+[10:56:25] OK: /tmp/openfoam-japanese-paths/日本語/case01
+
+[10:56:25] Testing OpenFOAM case path: /tmp/openfoam-japanese-paths/foam/ケース001
+
+[10:56:25] OK: /tmp/openfoam-japanese-paths/foam/ケース001
+
+[10:56:25] Testing OpenFOAM case path: /tmp/openfoam-japanese-paths/顧客A/解析/case01
+
+[10:56:25] OK: /tmp/openfoam-japanese-paths/顧客A/解析/case01
+
+[10:56:25] Testing OpenFOAM case path: /tmp/openfoam-japanese-paths/顧客A/解析 ケース01
