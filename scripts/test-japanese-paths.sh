@@ -106,6 +106,8 @@ main() {
     "$TEST_ROOT/foam/ケース001"
     "$TEST_ROOT/顧客A/解析/case01"
     "$TEST_ROOT/顧客A/解析 ケース01"
+    "$TEST_ROOT/日本語 パス/ケース 001"
+    "$TEST_ROOT/顧客 A/解析 ケース 01"
   )
 
   local case_dir

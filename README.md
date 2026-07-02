@@ -11,10 +11,13 @@ The image runs OpenFOAM with a UTF-8 locale and tests paths such as:
 - `/tmp/openfoam-japanese-paths/foam/ケース001`
 - `/tmp/openfoam-japanese-paths/顧客A/解析/case01`
 - `/tmp/openfoam-japanese-paths/顧客A/解析 ケース01`
+- `/tmp/openfoam-japanese-paths/日本語 パス/ケース 001`
+- `/tmp/openfoam-japanese-paths/顧客 A/解析 ケース 01`
 
-The final case intentionally includes whitespace. Treat that as a stricter test
-than Japanese characters alone, because shell quoting and some OpenFOAM path
-handling can fail independently of Unicode support.
+The final three cases intentionally include whitespace in Japanese/Unicode
+directory or case-name segments. Treat those as stricter tests than Japanese
+characters alone, because shell quoting and some OpenFOAM path handling can fail
+independently of Unicode support.
 
 ## Build
 
