@@ -4,7 +4,7 @@
 # Uses the community multi-arch OpenFOAM images so this can run on amd64 and arm64.
 # Override at build time if you need another distribution/version, e.g.:
 #   docker build --build-arg OPENFOAM_IMAGE=microfluidica/openfoam:12 -t openfoam-japanese-path-test .
-ARG OPENFOAM_IMAGE=microfluidica/openfoam:13
+ARG OPENFOAM_IMAGE=microfluidica/openfoam:2506
 FROM ${OPENFOAM_IMAGE}
 
 ENV LANG=C.UTF-8 \

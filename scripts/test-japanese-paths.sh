@@ -15,40 +15,52 @@ fail() {
   exit 1
 }
 
-load_openfoam() {
-  # Support both OpenFOAM Foundation and OpenCFD-style images/installations.
-  if command -v blockMesh >/dev/null 2>&1 && command -v foamDictionary >/dev/null 2>&1; then
-    return 0
-  fi
-
-  local candidates=(
+# Sourcing OpenFOAM environment in the global scope to avoid Bash 5.2 function context bugs
+if ! (command -v blockMesh >/dev/null 2>&1 && command -v foamDictionary >/dev/null 2>&1); then
+  FOUND_BASHRC=""
+  candidates=(
     /opt/openfoam*/etc/bashrc
     /usr/lib/openfoam*/etc/bashrc
     /usr/lib/openfoam/openfoam*/etc/bashrc
     /openfoam/etc/bashrc
   )
-
-  local bashrc
   for bashrc in "${candidates[@]}"; do
-    # shellcheck disable=SC1090
     if [[ -f "$bashrc" ]]; then
-      source "$bashrc"
+      FOUND_BASHRC="$bashrc"
       break
     fi
   done
+  if [[ -n "$FOUND_BASHRC" ]]; then
+    set +e
+    set +u
+    set +E
+    set +o pipefail
+    # shellcheck disable=SC1090
+    source "$FOUND_BASHRC"
+    set -e
+    set -u
+    set -E
+    set -o pipefail
+  fi
+fi
 
-  command -v blockMesh >/dev/null 2>&1 || fail "blockMesh not found after sourcing OpenFOAM environment"
-  command -v foamDictionary >/dev/null 2>&1 || fail "foamDictionary not found after sourcing OpenFOAM environment"
-}
+command -v blockMesh >/dev/null 2>&1 || fail "blockMesh not found after sourcing OpenFOAM environment"
+command -v foamDictionary >/dev/null 2>&1 || fail "foamDictionary not found after sourcing OpenFOAM environment"
+
 
 find_source_case() {
   local candidates=(
     "${FOAM_TUTORIALS:-}/incompressible/icoFoam/cavity/cavity"
     "${FOAM_TUTORIALS:-}/incompressibleFluid/cavity/cavity"
+    "${FOAM_TUTORIALS:-}/incompressibleFluid/cavity"
     /opt/openfoam*/tutorials/incompressible/icoFoam/cavity/cavity
     /opt/openfoam*/tutorials/incompressibleFluid/cavity/cavity
+    /opt/openfoam*/tutorials/incompressibleFluid/cavity
+    /opt/openfoam*/tutorials/legacy/incompressible/icoFoam/cavity/cavity
     /usr/lib/openfoam*/tutorials/incompressible/icoFoam/cavity/cavity
     /usr/lib/openfoam*/tutorials/incompressibleFluid/cavity/cavity
+    /usr/lib/openfoam*/tutorials/incompressibleFluid/cavity
+    /usr/lib/openfoam*/tutorials/legacy/incompressible/icoFoam/cavity/cavity
   )
 
   local case_dir
@@ -75,11 +87,11 @@ run_case() {
   log "Testing OpenFOAM case path: $case_dir"
 
   blockMesh -case "$case_dir" >"$case_dir/log.blockMesh" 2>&1
-  foamDictionary -case "$case_dir" system/controlDict -entry application -value \
+  foamDictionary "$case_dir/system/controlDict" -entry application -value \
     >"$case_dir/log.foamDictionary" 2>&1
 
   local solver
-  solver=$(foamDictionary -case "$case_dir" system/controlDict -entry application -value)
+  solver=$(foamDictionary "$case_dir/system/controlDict" -entry application -value)
   command -v "$solver" >/dev/null 2>&1 || fail "Configured solver '$solver' is not available"
   "$solver" -case "$case_dir" >"$case_dir/log.$solver" 2>&1
 
@@ -91,7 +103,6 @@ run_case() {
 
 main() {
   log "Locale: LANG=$LANG LC_ALL=$LC_ALL"
-  load_openfoam
   log "OpenFOAM loaded: WM_PROJECT=${WM_PROJECT:-unknown} WM_PROJECT_VERSION=${WM_PROJECT_VERSION:-unknown}"
 
   local src_case
